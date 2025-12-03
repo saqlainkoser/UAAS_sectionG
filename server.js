@@ -6,6 +6,8 @@ const dotenv =require("dotenv")
 const userModel = require("./models/userModel")
 const session = require("express-session");
 const { isAuthenticated, checkRole } = require("./middelwares/auth");
+const { name } = require("ejs");
+const deptModel = require("./models/deptModel");
 
 
 app.set("view engine","ejs")
@@ -65,6 +67,23 @@ app.get("/dashboard",isAuthenticated,checkRole("admin"),(req,res)=>{
     res.render("dashboard",{data})
 })
 
+app.get("/create-department",(req,res)=>{
+    res.render("create-department")
+})
+
+app.post("/create-department",async(req,res)=>{
+    const {name,type,address} = req.body
+    if(!name && !type && !address){
+        res.status(404).json({message:"Fill all the form fields"})
+    }
+    const newDept =await deptModel.create({
+        name : name,
+        type : type,
+        address : address 
+    })
+    await newDept.save()
+    res.redirect("/dashboard")
+})
 
 
 app.listen(process.env.PORT,()=>{
