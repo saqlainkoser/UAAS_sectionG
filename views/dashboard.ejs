@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            background: #fafafa;
+            color: #1f2937;
+        }
+
+        /* TOP BAR */
+        header {
+            padding: 20px 40px;
+            font-size: 28px;
+            font-weight: 600;
+            border-bottom: 1px solid #e5e5e5;
+            background: white;
+        }
+
+        /* MAIN LAYOUT */
+        .layout {
+            display: flex;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 220px;
+            padding: 30px;
+            border-right: 1px solid #e5e5e5;
+            background: white;
+            height: calc(100vh - 85px);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #f1f1f1;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #e5e5e5;
+        }
+
+        /* CONTENT AREA */
+        .content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .content h2 {
+            font-size: 24px;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* CARDS GRID */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            padding: 20px;
+            border-radius: 14px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            transition: 0.25s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        .card-title {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #4b5563;
+        }
+
+        .card-value {
+            font-size: 34px;
+            font-weight: 700;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Admin Dashboard
+</header>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h3>Navigation</h3>
+
+        <a href="/departments" class="nav-item">Departments</a>
+        <a href="/users" class="nav-item">Users</a>
+        <a href="/add-user" class="nav-item">Add User</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+
+        <h2>Dashboard Overview</h2>
+
+        <div class="cards">
+            <div class="card" style="background:#eef3ff;">
+                <div class="card-title">Total Departments</div>
+                <div class="card-value"> 5 </div>
+            </div>
+
+            <div class="card" style="background:#e8f9e8;">
+                <div class="card-title">Total Students</div>
+                <div class="card-value">7</div>
+            </div>
+
+            <div class="card" style="background:#fff2e5;">
+                <div class="card-title">Total Professors</div>
+                <div class="card-value">3</div>
+            </div>
+
+            <div class="card" style="background:#f6ecff;">
+                <div class="card-title">Total HODs</div>
+                <div class="card-value">2</div>
+            </div>
+        </div>
+
+        <footer>
+            © 2025 Admin Dashboard. All rights reserved.
+        </footer>
+    </div>
+
+</div>
+
+</body>
+</html>
