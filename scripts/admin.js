@@ -9,7 +9,6 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://localhost:27017/UAAS_sectio
 
 
 async function addAdminCred(){
-
 // salt - value , 
 // will define how much harder you password will encoded and time consuming to decode 
   const salt = await bcrypt.genSalt(10)
@@ -21,7 +20,9 @@ async function addAdminCred(){
     role:"admin",
     firstName:"admin",
   }) 
+
   await admin.save()
+  
   console.log(admin);
   console.log("ADMIN ADDED");
 }
