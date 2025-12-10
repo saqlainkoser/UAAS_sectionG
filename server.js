@@ -8,11 +8,12 @@ const session = require("express-session");
 const { isAuthenticated, checkRole } = require("./middelwares/auth");
 const { name } = require("ejs");
 const deptModel = require("./models/deptModel");
-
+const cookieParser = require("cookie-parser")
 
 app.set("view engine","ejs")
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
+app.use(cookieParser())
 
 dotenv.config({ path: '.env' })
 
@@ -63,8 +64,12 @@ app.post("/login",async (req,res)=>{
 
 //dashboard route
 app.get("/dashboard",isAuthenticated,checkRole("admin"),(req,res)=>{
-    const data = {}
-    res.render("dashboard",{data})
+    let message = ''
+    if(req.cookies.flashmsg){
+        message=req.cookies.flashmsg
+        res.cookie("flashmsg","")
+    }
+    res.render("dashboard",{message})
 })
 
 app.get("/create-department",(req,res)=>{
@@ -82,8 +87,62 @@ app.post("/create-department",async(req,res)=>{
         address : address 
     })
     await newDept.save()
+
+    res.cookie("flashmsg","DepartMent Created")
+
     res.redirect("/dashboard")
 })
+
+
+app.get("/departments",async(req,res)=>{
+    const search = req.query.search || ""
+    const type = req.query.type ||  'all'
+
+    const matchStage = {};
+
+    if(search.trim() !== "" ){
+        matchStage.name = {$regex : search ,$options : "i" } // case-insensitive
+    }
+
+    //Filter by tyoe 
+    if(type !== "all"){
+        matchStage.type = type
+    }
+
+
+
+    const data = await deptModel.aggregate([
+        //filter stage
+        {$match : matchStage},
+        {
+            $lookup:{
+                from : "uaasusers",
+                localField : "_id",
+                foreignField : "department",
+                as : "users"
+            }
+        },
+        {
+            $project:{
+                name: 1,
+                type: 1,
+                address: 1,
+                userCount : { $size : "$users" }
+            }
+        }
+    ])
+    console.log(data);
+    
+    res.render("departments",{data , search ,type })
+})
+
+app.get("/delete_deapartment/:id",async(req,res)=>{
+    const dId = req.params.id
+    await deptModel.findByIdAndDelete(dId)
+    res.redirect("/departments")
+})
+
+
 
 
 app.listen(process.env.PORT,()=>{

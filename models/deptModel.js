@@ -2,6 +2,9 @@ const mongoose = require("mongoose")
 
 const deptModel = new mongoose.Schema({
     //name type address
+
+// _id
+
     name:{
         type : String,
         unique: true,
