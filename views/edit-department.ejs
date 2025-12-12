@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Edit Department</h1>
+    <form action="/edit-department/<%=curDept._id%>" method="post" >
+        <input type="text" value="<%=curDept.name%>" placeholder="Dept Name" name="name">
+        <select name="type" >
+            <option value="UG" <%curDept.type == "UG" ? 'selected' : '' %> >UG</option>
+            <option value="PG" <%curDept.type == "PG" ? 'selected' : '' %> >PG</option>
+            <option value="Research" <%curDept.type == "Research" ? 'selected' : '' %> >Research</option>
+        </select>
+        <input type="text" placeholder="Address" value="<%=curDept.address%>">
+        <button>Create</button>
+    </form>
+</body>
+</html>

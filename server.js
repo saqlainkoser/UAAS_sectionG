@@ -9,6 +9,7 @@ const { isAuthenticated, checkRole } = require("./middelwares/auth");
 const { name } = require("ejs");
 const deptModel = require("./models/deptModel");
 const cookieParser = require("cookie-parser")
+const {sendMailer} = require("./scripts/test-script.js")
 
 app.set("view engine","ejs")
 app.use(express.urlencoded({extended:true}))
@@ -136,15 +137,52 @@ app.get("/departments",async(req,res)=>{
     res.render("departments",{data , search ,type })
 })
 
-app.get("/delete_deapartment/:id",async(req,res)=>{
+app.get("/delete_department/:id",async(req,res)=>{
     const dId = req.params.id
     await deptModel.findByIdAndDelete(dId)
     res.redirect("/departments")
 })
 
+app.get("/edit-department/:id",async (req,res)=>{
+    const curDept = await deptModel.findById(req.params.id)
+    res.render("edit-department",{curDept})
+})
+
+app.post("/edit-department/:id",async (req,res)=>{
+    await deptModel.findByIdAndUpdate(req.params.id , req.body)
+    res.redirect("/departments")
+})
+
+app.get("/create-user",async(req,res)=>{
+    const deptData = await deptModel.find({},"name")
+    res.render("create-user",{deptData})
+})
+
+app.post("/create-user",async(req,res)=>{
+    const newUser = await userModel.create(req.body)
+    await newUser.save()
+
+    const mailTo = newUser.email
+    const subject = "User Credentials To Login"
+    const text = "UserId : " + newUser.email + " Password : 12345"
+    const html = `<a href='http://localhost:3555/change-password?email=${newUser.email}  >Click Here to Reset Password</a>`
+    await sendMailer(mailTo,subject,text,html)
+
+    res.redirect("/departments")
+})
+
+app.get("/change-password",(req,res)=>{
+    const email = req.query.email
+    res.render("password-reset",{email})
+})
+
+app.post("/change-password/:email",async(req,res)=>{
+    await userModel.findOneAndUpdate({email:req.params.email},{$set:{password:req.body.password} })
+    res.redirect("/dasboard")
+})
 
 
 
 app.listen(process.env.PORT,()=>{
-    console.log(`Server is running - http://localhost:${process.env.PORT}/login`);
+    console.log(`Server is running - http://localhost:${process.env.PORT}/create-user`);
 })

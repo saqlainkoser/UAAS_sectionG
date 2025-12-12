@@ -113,10 +113,9 @@
                     <td><%=ele.name%></td>
                     <td><%=ele.type%></td>
                     <td><%=ele.userCount%></td>
-                    <td><button>Edit</button></td>
+                    <td><button onclick="window.location.href='/edit-department/<%=ele._id%>' ">Edit</button></td>
                     <td>
-                        <form action="/delete_deapartment/<%=ele._id%>"  method="GET" onsubmit="deletePopUp('<%=ele._id%>')">
-                            <button >Delete</button>
+                            <button onclick="deletePopUp('<%=ele._id%>')" >Delete</button>
                         </form>
                     </td>
                 </tr>
@@ -127,10 +126,12 @@
 
 <script>
     function deletePopUp(id){
-     if(confirm(`Are you Sure you want to delete`)){
+        const flag = confirm(`Are you Sure you want to delete`)
+     if(flag){
+        window.location.href = "/delete_department/"+id
      }
      else{
-        window.location.href = "/departments"
+       return
      }
     }
 </script>
