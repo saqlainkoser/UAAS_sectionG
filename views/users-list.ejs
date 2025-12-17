@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Users</h1>
+    <form onsubmit="filter(event)" action="" method="get">
+        <input type="text" name="search" id="search"  placeholder="Search By name or email">
+        <select name="role" id="role">
+            <option value="student">Student</option>
+            <option value="hod">Student</option>
+            <option value="professor">Professor</option>
+        </select>
+        <select name="department" id="department">
+            <%depts.forEach((el)=>{%>
+            <option value="<%=el.name%>"><%=el.name%></option>
+            <%})%>
+        </select>
+        <button type="submit">Apply</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Email</td>
+                <td>Role</td>
+                <td>Department</td>
+                <td>Actions</td>
+            </tr>
+        </thead>
+        <tbody>
+            <%users.forEach((el)=>{%>
+            <tr>
+                <td><%=el?.firstName +  " " + el?.lastName %></td>
+                <td><%=el.email%></td>
+                <td><%=el.role%></td>
+                <td><%=el.department?.name%></td>
+                <td>
+                    <button>Edit</button>
+                    <button>Delete</button>
+                </td>
+            </tr>
+            <%})%>
+        </tbody>
+    </table>
+</body>
+<script>
+    let userData = []
+    const filter =async (event) => {  
+        event.preventDefault()   
+        //fetching data    
+        const data =await fetch("http://localhost:3555/usersdata")
+        .then((res)=> res.json())
+        .catch((err)=>{console.log(err)})
+            userData = data.data
+            console.log(userData);
+
+        //taking inputs from filter elements
+        const search = document.getElementById("search").value.toLowerCase()
+        const role = document.getElementById("role").value
+        const department = document.getElementById("department").value
+
+        //filtering
+        userData = userData.filter(ele=> ele.firstName === search || ele.email === search || ele.firstName.toLowerCase().includes(search) || ele.email.toLowerCase().includes(search) )
+        console.log(userData);
+    }
+</script>
+
+</html>

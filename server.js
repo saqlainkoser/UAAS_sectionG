@@ -166,7 +166,7 @@ app.post("/create-user",async(req,res)=>{
     const subject = "User Credentials To Login"
     const text = "UserId : " + newUser.email + " Password : 12345"
     const html = `<a href='http://localhost:3555/change-password?email=${newUser.email}  >Click Here to Reset Password</a>`
-    await sendMailer(mailTo,subject,text,html)
+    // await sendMailer(mailTo,subject,text,html)
 
     res.redirect("/departments")
 })
@@ -181,8 +181,24 @@ app.post("/change-password/:email",async(req,res)=>{
     res.redirect("/dasboard")
 })
 
+app.get("/users",async(req,res)=>{
+    const users = await userModel.find({role:{$ne:"admin"}}).populate('department')
+    // res.json(users)
+    const depts = await deptModel.find()
+    res.render('users-list',{users,depts})
+})
+
+
+
+app.get("/usersdata",async(req,res)=>{
+    const users = await userModel.find({role:{$ne:"admin"}}).populate('department')
+    // res.json(users)
+    res.json({data:users})
+})
+
+
 
 
 app.listen(process.env.PORT,()=>{
-    console.log(`Server is running - http://localhost:${process.env.PORT}/create-user`);
+    console.log(`Server is running - http://localhost:${process.env.PORT}/users`);
 })
