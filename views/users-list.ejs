@@ -10,11 +10,13 @@
     <form onsubmit="filter(event)" action="" method="get">
         <input type="text" name="search" id="search"  placeholder="Search By name or email">
         <select name="role" id="role">
+            <option value="" default>Select Role</option>
             <option value="student">Student</option>
-            <option value="hod">Student</option>
+            <option value="hod">HOD</option>
             <option value="professor">Professor</option>
         </select>
         <select name="department" id="department">
+            <option value="" default>Select Dept</option>
             <%depts.forEach((el)=>{%>
             <option value="<%=el.name%>"><%=el.name%></option>
             <%})%>
@@ -31,7 +33,7 @@
                 <td>Actions</td>
             </tr>
         </thead>
-        <tbody>
+        <!-- <tbody>
             <%users.forEach((el)=>{%>
             <tr>
                 <td><%=el?.firstName +  " " + el?.lastName %></td>
@@ -44,17 +46,45 @@
                 </td>
             </tr>
             <%})%>
+        </tbody> -->
+        <tbody id="table">
+
         </tbody>
     </table>
 </body>
 <script>
     let userData = []
+    let filteredUserData = []
+
+    let data =[]
+    let tableElement = document.getElementById("table")
+    window.onload = async()=>{
+        data = await fetch("http://localhost:3555/usersdata")
+        .then((res)=> res.json())
+        .catch((err)=>{console.log(err)})
+        console.log(data);
+
+        
+        tableElement.innerHTML = data.data.map((ele) => 
+            `<tr>
+                <td>${ele.firstName}</td>
+                <td>${ele.email}</td>
+                <td>${ele.role}</td>
+                <td>${ele.department.name}</td>
+                <td><button onclick="editUser('${ele._id}')" >Edit</button>
+                    <button onclick="deleteUser('${ele._id}')">Delete</button></td>
+                </tr>`
+    ).join("")
+    }
+
+
+
+    
+
     const filter =async (event) => {  
         event.preventDefault()   
         //fetching data    
-        const data =await fetch("http://localhost:3555/usersdata")
-        .then((res)=> res.json())
-        .catch((err)=>{console.log(err)})
+        
             userData = data.data
             console.log(userData);
 
@@ -63,10 +93,52 @@
         const role = document.getElementById("role").value
         const department = document.getElementById("department").value
 
-        //filtering
-        userData = userData.filter(ele=> ele.firstName === search || ele.email === search || ele.firstName.toLowerCase().includes(search) || ele.email.toLowerCase().includes(search) )
+        //for user name and email
+        console.log(search);
+        
+        if(search!==''){
+            userData = userData.filter(ele=> ele.firstName === search || ele.email === search || ele.firstName.toLowerCase().includes(search) || ele.email.toLowerCase().includes(search) )
+        }
+
+        //for role
+        console.log(role);
+        if(role!==''){
+            userData = userData.filter(ele=> ele.role === role)
+        }
+
+        //for department
+        console.log(department);
+        if(department!==''){
+            userData = userData.filter(ele=> ele.department.name === department)
+        }
+        
         console.log(userData);
+        // filteredUserData = userData
+        
+
+
+       tableElement.innerHTML = userData.map((ele) => 
+            `<tr>
+                <td>${ele.firstName}</td>
+                <td>${ele.email}</td>
+                <td>${ele.role}</td>
+                <td>${ele.department.name}</td>
+                <td><button onclick="editUser("${ele._id}")" >Edit</button>
+                    <button onclick="deleteUser("${ele._id}")">Delete</button></td>
+                </tr>`
+    ).join("")
+            
     }
+
+function editUser(id){
+    window.location.href = `/edituser/`+ id
+}
+  
+function deleteUser(id){
+    window.location.href = `/deleteuser/` + id
+}
+
+
 </script>
 
 </html>

@@ -188,7 +188,20 @@ app.get("/users",async(req,res)=>{
     res.render('users-list',{users,depts})
 })
 
+app.get("/edituser/:id",async(req,res)=>{
+})
 
+app.get("/deleteuser/:id",async(req,res)=>{
+    await userModel.findByIdAndDelete(req.params.id)
+    res.redirect("/users")
+})
+
+
+
+app.get("/edituser/:id",async(req,res)=>{
+    await userModel.findByIdAndUpdate(req.params.id,req.body)
+    res.redirect("/users")
+})
 
 app.get("/usersdata",async(req,res)=>{
     const users = await userModel.find({role:{$ne:"admin"}}).populate('department')
